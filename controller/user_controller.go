@@ -40,6 +40,12 @@ func CreateUser(c *gin.Context) {
         return
     }
 
+    validationErrors := utils.ValidateStruct(&user)
+    if validationErrors != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"validation_errors": validationErrors})
+        return
+    }
+
     id, err := model.CreateUser(user)
     if err != nil {
         utils.ErrorResponse(c, http.StatusInternalServerError, err.Error())

@@ -7,6 +7,9 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang-migrate/migrate"
+	"github.com/golang-migrate/migrate/database/mysql"
+	_ "github.com/golang-migrate/migrate/source/file"
 	"github.com/joho/godotenv"
 )
 
@@ -33,4 +36,27 @@ func InitDB() *sql.DB {
 	}
 
 	return db
+}
+
+func RunMigrations(db *sql.DB) error {
+	driver, err := mysql.WithInstance(db, &mysql.Config{})
+	if err != nil {
+		return err
+	}
+
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://migrations",
+		"mysql",
+		driver,
+	)
+	if err != nil {
+		return err
+	}
+
+	err = m.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		return err
+	}
+
+	return nil
 }
