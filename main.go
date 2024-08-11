@@ -33,7 +33,7 @@ func main() {
 
 	routes.UserRoutes(r)
 
-	 r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	
 
 	r.Run(":8080")
