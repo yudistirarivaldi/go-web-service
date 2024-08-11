@@ -1,20 +1,20 @@
 package model
 
 import (
-    "database/sql"
+	"database/sql"
 )
 
 var DB *sql.DB
 
 type User struct {
-    ID    int    `json:"id"`
+    ID    int  
     Name  string `json:"name" validate:"required"`
     Email string `json:"email" validate:"required"`
     Password string `json:"password" validate:"required"`
 }
 
 func GetAllUsers() ([]User, error) {
-    rows, err := DB.Query("SELECT id, name, email FROM users")
+    rows, err := DB.Query("SELECT id, name, email, password FROM users")
     if err != nil {
         return nil, err
     }
@@ -23,7 +23,7 @@ func GetAllUsers() ([]User, error) {
     var users []User
     for rows.Next() {
         var user User
-        if err := rows.Scan(&user.ID, &user.Name, &user.Email); err != nil {
+        if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password); err != nil {
             return nil, err
         }
         users = append(users, user)
@@ -41,7 +41,7 @@ func GetUserByID(id int) (User, error) {
 }
 
 func CreateUser(user User) (int64, error) {
-    result, err := DB.Exec("INSERT INTO users (name, email) VALUES (?, ?)", user.Name, user.Email)
+    result, err := DB.Exec("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", user.Name, user.Email, user.Password)
     if err != nil {
         return 0, err
     }

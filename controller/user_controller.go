@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"strconv"
+	"web-service/formatter"
 	"web-service/model"
 	"web-service/utils"
 
@@ -15,7 +16,7 @@ func GetUsers(c *gin.Context) {
         utils.ErrorResponse(c, http.StatusInternalServerError, err.Error())
         return
     }
-    utils.SuccessResponse(c, users, "Users fetched successfully")
+    utils.SuccessResponse(c, formatter.FormatUsers(users), "Users fetched successfully")
 }
 
 func GetUserByID(c *gin.Context) {
